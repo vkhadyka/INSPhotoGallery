@@ -136,6 +136,15 @@ open class INSPhotosOverlayView: UIView , INSPhotosOverlayViewable {
     @objc private func closeButtonTapped(_ sender: UIBarButtonItem) {
         photosViewController?.dismiss(animated: true, completion: nil)
     }
+
+
+
+    private let activityWindow: UIWindow = {
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = UIViewController()
+        return window
+    }()
+
     
     @objc private func actionButtonTapped(_ sender: UIBarButtonItem) {
         if let currentPhoto = currentPhoto {
@@ -143,7 +152,13 @@ open class INSPhotosOverlayView: UIView , INSPhotosOverlayViewable {
                 if let image = (image ?? currentPhoto.thumbnailImage) {
                     let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
                     activityController.popoverPresentationController?.barButtonItem = sender
-                    self?.photosViewController?.present(activityController, animated: true, completion: nil)
+                        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 13 {
+                            self?.activityWindow.makeKeyAndVisible()
+                            self?.activityWindow.rootViewController?.present(activityController, animated: true)
+                        } else {
+                            self?.photosViewController?.present(activityController, animated: true) {
+                            }
+                    }
                 }
             });
         }
