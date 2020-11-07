@@ -151,6 +151,13 @@ open class INSPhotosOverlayView: UIView , INSPhotosOverlayViewable {
             currentPhoto.loadImageWithCompletionHandler({ [weak self] (image, error) -> () in
                 if let image = (image ?? currentPhoto.thumbnailImage) {
                     let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+					
+					
+					activityController.completionWithItemsHandler = { (activity: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
+						 // ...
+						 UIApplication.shared.delegate?.window??.makeKeyAndVisible()
+					  }
+					
                     activityController.popoverPresentationController?.barButtonItem = sender
                         if ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 13 {
                             self?.activityWindow.makeKeyAndVisible()
